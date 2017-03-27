@@ -1,0 +1,50 @@
+<JOB>
+    <GLOBALS>
+		<TEMP_DIR><![CDATA[C:\temp\]]></TEMP_DIR>
+		<LOG_INTERVEL>500</LOG_INTERVEL>
+	</GLOBALS>
+	<COMPONENT ROOT_PKG="pub.ayada.insight.xmlReader">
+<!--		
+        <XML_READER NAME="XML_READER_1" PATH="C:\temp\dbml.xml" ENCODING="UTF-8" BUFFER_RECS="50000">
+-->        
+		<XML_READER NAME="XML_READER_1" PATH="C:\temp\GQ19DBML_b.xml" ENCODING="UTF-8" BUFFER_RECS="50000">
+            <BLOCK ID="Sponsor" START_ELEMENT="Sponsor" CACHE_BLOCK="false">
+                <CACHE>
+                    <CACHE_TAG_BLOCK NAME="PlanInformation" XPATH_TO_NODE="Sponsor/Plans/Plan/PlanInformation" />
+                    <CACHE_COLUMN NAME="SponsorID" XPATH_TO_NODE="Sponsor"            ATTRIB="SponsorID" />
+                    <CACHE_COLUMN NAME="PlanID"    XPATH_TO_NODE="Sponsor/Plans/Plan" ATTRIB="PlanID"    />
+                </CACHE>
+                <RECORD ID="Participant" XPATH_FROM_START_ELE="Sponsor/Plans/Plan/Participants/Participant">
+                    <COLUMN NAME="ParticipantID"   SRC="RECORD_CACHE"    DATA_TYPE="STRING"  FORMAT="" TRIM_TYPE="" XPATH="/Participant/@ParticipantID"  />
+                    <COLUMN NAME="InclusionReason" SRC="RECORD_CACHE"    DATA_TYPE="STRING"  FORMAT="" TRIM_TYPE="" XPATH="/Participant/InclusionReason" />
+                    <COLUMN NAME="Gender"          SRC="RECORD_CACHE"    DATA_TYPE="STRING"  FORMAT="" TRIM_TYPE="" XPATH="/Participant/EmployeeInformation/Gender"   />
+                    <COLUMN NAME="GivenName"       SRC="RECORD_CACHE"    DATA_TYPE="STRING"  FORMAT="" TRIM_TYPE="" XPATH="/Participant/EmployeeInformation/PersonName/GivenName" />
+                    <COLUMN NAME="FamilyName"      SRC="RECORD_CACHE"    DATA_TYPE="STRING"  FORMAT="" TRIM_TYPE="" XPATH="/Participant/EmployeeInformation/PersonName/FamilyName"/>
+                    <COLUMN NAME="SponsorID"       SRC="CACHE_COLUMN"    DATA_TYPE="INTEGER" CACHE_ENTRY="SponsorID"/>
+                    <COLUMN NAME="PlanID"          SRC="CACHE_COLUMN"    DATA_TYPE="INTEGER" CACHE_ENTRY="PlanID"/>
+                    <COLUMN NAME="PlanBenefitType" SRC="CACHE_TAG_BLOCK" DATA_TYPE="STRING"  CACHE_ENTRY="PlanInformation" XPATH="/PlanInformation/PlanBenefitType" />
+                </RECORD>                                                
+			</BLOCK>                                                     
+		</XML_READER>
+	</COMPONENT>
+	<COMPONENT ROOT_PKG="pub.ayada.insight.fixedFileWriter" >
+        <FILE_WRITER NAME="XML_WRITER_1"
+                     PATH="C:\TEMP\GQ19DBML.TXT"
+                     MODE="CREATE"
+                     ENCODING="UTF-8"
+                     EOL="\n"
+                     HEADER="true"  
+                     DELIMITER=""
+                     >
+                <PARENT NAME="XML_READER_1"    RECORD_ID="Participant"    />
+                <COLUMN NAME="SponsorID"       DATA_TYPE="INTEGER" LENGTH="10"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="PlanID"          DATA_TYPE="INTEGER" LENGTH="10"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="PlanBenefitType" DATA_TYPE="STRING"  LENGTH="20"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="ParticipantID"   DATA_TYPE="STRING"  LENGTH="80"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="InclusionReason" DATA_TYPE="STRING"  LENGTH="10"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="Gender"          DATA_TYPE="STRING"  LENGTH="10"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="GivenName"       DATA_TYPE="STRING"  LENGTH="50"  FORMAT="" TRIM_TYPE=""/>
+                <COLUMN NAME="FamilyName"      DATA_TYPE="STRING"  LENGTH="50"  FORMAT="" TRIM_TYPE=""/>
+        </FILE_WRITER>
+    </COMPONENT>
+</JOB>
