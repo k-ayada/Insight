@@ -9,11 +9,6 @@ import org.slf4j.LoggerFactory;
 import pub.ayada.insight.core.ds.Queue;
 
 public class ExeStats {
-
-/*	private volatile long readCount;
-	private volatile long writeCount;
-	private volatile long skipCount;
-*/
 	private volatile int threadCount;
 	private final String LogLevl;
 	private final String CharSet;
@@ -119,42 +114,6 @@ public class ExeStats {
 		if(x.length()>0)
 			L.info(x);
 	}
-
-/*	public void updateStatsFromstep(String stepName, String filedName) {
-		switch(filedName) {
-		case "IN"   : this.readCount += this.StepStats
-				                                   .get(stepName)
-				                                   .getInCount();
-		break; 
-		case "OUT"  : this.writeCount += this.StepStats
-                                                    .get(stepName)
-                                                    .getOutCount();
-		break;
-		case "SKIP" : this.skipCount  += this.StepStats
-                                                   .get(stepName)
-                                                   .getSkipCount();
-		break;
-		case "ALL"  : this.readCount += this.StepStats
-                                                   .get(stepName)
-                                                   .getInCount();		
-		              this.writeCount  += this.StepStats
-                                                   .get(stepName)
-                                                   .getOutCount();
-		              this.skipCount += this.StepStats
-                                                   .get(stepName)
-                                                   .getSkipCount();
-        break;
-        default: break;
-		}
-	}
-*/
-/*	public void report() {		
-		L.info("    JobExeStats" + ". In: " + String.format("%10d", getReadCount())
-				+ ". Skip: " + String.format("%10d", getSkipCount())
-				+ ". Out: " + String.format("%10d", getWriteCount())
-				+ ". Exe Time: " + getElapsedTime());
-	}*/
-
 	public String getElapsedTime() {
 		long ElapsedMil = ((System.nanoTime() / 1000000L) - this.stepStartNano);
 		int sec = (int) ((ElapsedMil) / 1000) % 60;
