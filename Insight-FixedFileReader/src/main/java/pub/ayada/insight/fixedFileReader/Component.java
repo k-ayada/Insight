@@ -66,7 +66,7 @@ public class Component implements Runnable {
 		this.outQ = new HashMap<String, Queue<Record>>(this.componentMeta.getRECORDS().getRECORD().size());
 		for (int i = 0; i < this.componentMeta.getRECORDS().getRECORD().size(); i++) {
 			String expr = this.componentMeta.getRECORDS().getRECORD().get(i).getFILTER_EXP();
-			if (expr.trim().isEmpty() || expr.trim().toLowerCase().equals("no")) {
+			if (expr == null || expr.trim().isEmpty() || expr.trim().toLowerCase().equals("no")) {
 				this.fltrExps.add(i, (Expr) null);
 			} else {
 				this.fltrExps.add(i, new Expr(expr));
