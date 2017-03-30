@@ -30,29 +30,31 @@ public class Component implements Runnable {
  
 	public Component(JAXB ComponentPropsXML, ExeStats ExeStats, HashMap<String, HashMap<String, Queue<Record>>> Qs) throws Exception {		
 		this.componentMeta = ComponentPropsXML;
-		this.inQ = Qs.get(this.componentMeta.getPARENT().getNAME()).get(this.componentMeta.getPARENT().getRECORD_ID());		
+		this.inQ = Qs.get(this.componentMeta.getPARENT()).get(this.componentMeta.getRECORD_ID());		
 		this.exeStatsObj = ExeStats;
 		
 		// Build the record out format 
-		StringBuilder sb = new StringBuilder(); 
-		for (int i=0; i < this.componentMeta.getCOLUMN().size();i++) {
+		
+	}
+	
+	private void buildRecFormat() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < this.componentMeta.getCOLUMN().size(); i++) {
 			try {
-			String fmt = this.componentMeta.getCOLUMN().get(i).getFORMAT(); 
-			sb.append(fmt.replaceAll("%", "%"+(i+1)+"\\$")).append(this.componentMeta.getDELIMITER());
-			} catch (Exception e ) {
+				String fmt = this.componentMeta.getCOLUMN().get(i).getFORMAT();
+				sb.append(fmt.replaceAll("%", "%" + (i + 1) + "\\$")).append(this.componentMeta.getDELIMITER());
+			} catch (Exception e) {
 				e.printStackTrace();
-				throw new IllegalArgumentException("Failed to handle the formatting of '" 
-			    +this.componentMeta.getCOLUMN().get(i).getFORMAT()
-			    + "' Build so far:" + sb.toString());
+				throw new IllegalArgumentException("Failed to handle the formatting of '"
+						+ this.componentMeta.getCOLUMN().get(i).getFORMAT() + "' Build so far:" + sb.toString());
 			}
 		}
-		sb.setLength(sb.length()- this.componentMeta.getDELIMITER().length());
+		sb.setLength(sb.length() - this.componentMeta.getDELIMITER().length());
 		sb.trimToSize();
 		sb.append(this.componentMeta.getEOL());
 		this.outFormat = sb.toString();
 		L.info("Output Record Format:" + this.outFormat);
 	}
-	
 	
 	/**
 	 * Kickoff the Component processing.
@@ -65,12 +67,12 @@ public class Component implements Runnable {
 			while (true) {
 				if (  this.inQ.canGet() 
 				   || this.inQ.isLoadEnded()
-				   || this.exeStatsObj.getStepStats(this.componentMeta.getPARENT().getNAME()).getStepStatus() < 0) {
+				   || this.exeStatsObj.getStepStats(this.componentMeta.getPARENT()).getStepStatus() < 0) {
 				  break;
 				}  
 				Thread.sleep(999);
 			}
-			
+			buildRecFormat();
 		    // get the out column's indexes	
 			int i = -1;
 			this.sourceColInx = new int[this.componentMeta.getCOLUMN().size()];
@@ -103,7 +105,7 @@ public class Component implements Runnable {
 			 * No real advantage other than better logging 			
 			 */
 			while (true) {
-				if (this.exeStatsObj.getStepStats(this.componentMeta.getPARENT().getNAME()).getStepStatus() == 1) {
+				if (this.exeStatsObj.getStepStats(this.componentMeta.getPARENT()).getStepStatus() == 1) {
 					Thread.sleep(999);
 				} else {
 					break;
